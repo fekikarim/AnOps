@@ -1,0 +1,389 @@
+
+classDiagram
+direction TB
+
+%% IDENTITY AND ACCESS
+
+class User {
+  +UUID id
+  +string email
+  +string passwordHash
+  +string fullName
+  +string accountStatus
+  +datetime createdAt
+}
+
+class Organization {
+  +UUID id
+  +string name
+  +string slug
+  +string status
+  +datetime createdAt
+}
+
+class Company {
+  +UUID id
+  +UUID organizationId
+  +string name
+  +string currencyCode
+  +string timezone
+  +bool isActive
+}
+
+class Membership {
+  +UUID id
+  +UUID userId
+  +UUID organizationId
+  +string status
+  +datetime joinedAt
+}
+
+class Role {
+  +UUID id
+  +string name
+  +string description
+}
+
+class Permission {
+  +UUID id
+  +string resource
+  +string action
+}
+
+class MembershipRole {
+  +UUID membershipId
+  +UUID roleId
+  +UUID companyId
+}
+
+class RolePermission {
+  +UUID roleId
+  +UUID permissionId
+}
+
+%% APPS AND COMMERCIAL ENTITLEMENTS
+
+class Application {
+  +UUID id
+  +string code
+  +string name
+  +string status
+  +string category
+}
+
+class Plan {
+  +UUID id
+  +string name
+  +string planType
+  +string status
+}
+
+class PlanEntitlement {
+  +UUID id
+  +UUID planId
+  +UUID applicationId
+  +string accessLevel
+  +string limitsConfig
+}
+
+class Subscription {
+  +UUID id
+  +UUID organizationId
+  +UUID planId
+  +string status
+  +datetime startsAt
+  +datetime endsAt
+}
+
+class SubscriptionApp {
+  +UUID id
+  +UUID subscriptionId
+  +UUID applicationId
+  +string status
+}
+
+class BillingRecord {
+  +UUID id
+  +UUID subscriptionId
+  +string reference
+  +decimal amount
+  +string currencyCode
+  +string status
+  +datetime issuedAt
+}
+
+%% INVENTORY AND MANUFACTURING
+
+class Product {
+  +UUID id
+  +UUID companyId
+  +string sku
+  +string name
+  +decimal salePrice
+  +decimal reorderPoint
+}
+
+class StockMovement {
+  +UUID id
+  +UUID companyId
+  +UUID productId
+  +decimal quantity
+  +string movementType
+  +string status
+}
+
+class Supplier {
+  +UUID id
+  +UUID companyId
+  +string name
+}
+
+class PurchaseOrder {
+  +UUID id
+  +UUID companyId
+  +UUID supplierId
+  +string status
+  +decimal totalAmount
+}
+
+class WorkOrder {
+  +UUID id
+  +UUID companyId
+  +UUID productId
+  +string status
+  +decimal plannedQuantity
+}
+
+%% FINANCE
+
+class Customer {
+  +UUID id
+  +UUID companyId
+  +string name
+  +string email
+}
+
+class Invoice {
+  +UUID id
+  +UUID companyId
+  +UUID customerId
+  +string status
+  +decimal totalAmount
+  +decimal amountDue
+}
+
+class Payment {
+  +UUID id
+  +UUID companyId
+  +decimal amount
+  +string status
+}
+
+class Expense {
+  +UUID id
+  +UUID companyId
+  +decimal amount
+  +string status
+  +string vendorName
+}
+
+%% HUMAN RESOURCES
+
+class Employee {
+  +UUID id
+  +UUID companyId
+  +UUID userId
+  +string employeeNumber
+  +string employmentStatus
+}
+
+class LeaveRequest {
+  +UUID id
+  +UUID employeeId
+  +string status
+  +date startDate
+  +date endDate
+}
+
+class AttendanceRecord {
+  +UUID id
+  +UUID employeeId
+  +datetime checkIn
+  +datetime checkOut
+}
+
+class Payslip {
+  +UUID id
+  +UUID employeeId
+  +decimal netPay
+  +string status
+}
+
+%% MARKETING
+
+class Contact {
+  +UUID id
+  +UUID companyId
+  +string email
+  +string lifecycleStage
+}
+
+class Campaign {
+  +UUID id
+  +UUID companyId
+  +string channel
+  +string status
+}
+
+class CampaignDelivery {
+  +UUID id
+  +UUID campaignId
+  +UUID contactId
+  +string status
+}
+
+class SocialPost {
+  +UUID id
+  +UUID companyId
+  +string status
+  +datetime scheduledAt
+}
+
+%% COMMUNITY AND SUPPORT
+
+class BlogPost {
+  +UUID id
+  +UUID companyId
+  +UUID authorUserId
+  +string title
+  +string status
+}
+
+class ForumTopic {
+  +UUID id
+  +UUID companyId
+  +UUID authorUserId
+  +string title
+  +string status
+}
+
+class ChatConversation {
+  +UUID id
+  +UUID companyId
+  +string status
+}
+
+class ChatMessage {
+  +UUID id
+  +UUID conversationId
+  +UUID senderUserId
+  +string body
+}
+
+%% AI AND AUDIT
+
+class AIJob {
+  +UUID id
+  +UUID organizationId
+  +UUID companyId
+  +UUID requestedBy
+  +string featureCode
+  +string status
+  +string modelVersion
+  +datetime createdAt
+}
+
+class AIUsageRecord {
+  +UUID id
+  +UUID organizationId
+  +UUID aiJobId
+  +string featureCode
+  +decimal usageAmount
+  +datetime recordedAt
+}
+
+class AuditEvent {
+  +UUID id
+  +UUID organizationId
+  +UUID companyId
+  +UUID actorUserId
+  +string action
+  +string entityType
+  +UUID entityId
+  +datetime occurredAt
+}
+
+%% IDENTITY RELATIONSHIPS
+
+User "1" --> "0..*" Membership : joins
+Organization "1" *-- "1..*" Company : contains
+Organization "1" --> "0..*" Membership : grants membership
+Membership "1" --> "1..*" MembershipRole : receives roles
+Role "1" --> "0..*" MembershipRole : assigned through
+Role "1" --> "0..*" RolePermission : contains
+Permission "1" --> "0..*" RolePermission : granted through
+Company "0..1" --> "0..*" MembershipRole : scopes role
+
+%% SUBSCRIPTIONS AND APPS
+
+Plan "1" --> "0..*" PlanEntitlement : defines
+Application "1" --> "0..*" PlanEntitlement : included in plans
+Organization "1" --> "0..*" Subscription : subscribes
+Plan "1" --> "0..*" Subscription : selected plan
+Subscription "1" --> "0..*" SubscriptionApp : activates apps
+Application "1" --> "0..*" SubscriptionApp : activated through
+Subscription "1" --> "0..*" BillingRecord : billed through
+
+%% INVENTORY RELATIONSHIPS
+
+Company "1" --> "0..*" Product : owns
+Product "1" --> "0..*" StockMovement : moved through
+Company "1" --> "0..*" StockMovement : records
+Company "1" --> "0..*" Supplier : manages
+Supplier "1" --> "0..*" PurchaseOrder : supplies
+Company "1" --> "0..*" PurchaseOrder : owns
+Company "1" --> "0..*" WorkOrder : owns
+Product "1" --> "0..*" WorkOrder : produced
+
+%% FINANCE RELATIONSHIPS
+
+Company "1" --> "0..*" Customer : manages
+Customer "1" --> "0..*" Invoice : receives
+Company "1" --> "0..*" Invoice : issues
+Company "1" --> "0..*" Payment : records
+Company "1" --> "0..*" Expense : tracks
+Invoice "0..*" --> "0..*" Payment : settled by allocations
+
+%% HR RELATIONSHIPS
+
+Company "1" --> "0..*" Employee : employs
+User "0..1" --> "0..1" Employee : linked identity
+Employee "1" --> "0..*" LeaveRequest : requests
+Employee "1" --> "0..*" AttendanceRecord : logs
+Employee "1" --> "0..*" Payslip : receives
+
+%% MARKETING RELATIONSHIPS
+
+Company "1" --> "0..*" Contact : manages
+Company "1" --> "0..*" Campaign : owns
+Campaign "1" --> "0..*" CampaignDelivery : dispatches
+Contact "1" --> "0..*" CampaignDelivery : receives
+Company "1" --> "0..*" SocialPost : schedules
+
+%% COMMUNITY RELATIONSHIPS
+
+User "1" --> "0..*" BlogPost : authors
+User "1" --> "0..*" ForumTopic : starts
+Company "1" --> "0..*" BlogPost : publishes
+Company "1" --> "0..*" ForumTopic : hosts
+Company "1" --> "0..*" ChatConversation : supports
+ChatConversation "1" *-- "0..*" ChatMessage : contains
+
+%% AI, USAGE AND AUDIT
+
+Organization "1" --> "0..*" AIJob : requests
+AIJob "1" --> "0..*" AIUsageRecord : records usage
+User "1" --> "0..*" AIJob : requests
+Company "0..1" --> "0..*" AIJob : contextual company
+Organization "1" --> "0..*" AuditEvent : audits
+User "1" --> "0..*" AuditEvent : performs actions

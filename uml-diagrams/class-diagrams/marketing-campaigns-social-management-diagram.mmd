@@ -1,0 +1,156 @@
+
+classDiagram
+direction TB
+
+class Company {
+  +UUID id
+  +string name
+}
+
+class Contact {
+  +UUID id
+  +UUID companyId
+  +string firstName
+  +string lastName
+  +string email
+  +string phone
+  +string source
+  +string lifecycleStage
+  +bool isActive
+}
+
+class ContactTag {
+  +UUID id
+  +UUID companyId
+  +string name
+  +string color
+}
+
+class ContactTagAssignment {
+  +UUID contactId
+  +UUID tagId
+  +datetime assignedAt
+}
+
+class ConsentRecord {
+  +UUID id
+  +UUID contactId
+  +string channel
+  +string purpose
+  +string status
+  +string source
+  +datetime recordedAt
+  +datetime withdrawnAt
+}
+
+class Audience {
+  +UUID id
+  +UUID companyId
+  +string name
+  +string description
+  +string selectionRule
+  +bool isActive
+}
+
+class AudienceMember {
+  +UUID audienceId
+  +UUID contactId
+  +datetime addedAt
+}
+
+class Campaign {
+  +UUID id
+  +UUID companyId
+  +string name
+  +string channel
+  +string status
+  +datetime scheduledAt
+  +datetime startedAt
+  +datetime completedAt
+  +UUID createdBy
+}
+
+class CampaignTemplate {
+  +UUID id
+  +UUID companyId
+  +string name
+  +string channel
+  +string subject
+  +string body
+  +int version
+  +bool isActive
+}
+
+class CampaignDelivery {
+  +UUID id
+  +UUID campaignId
+  +UUID contactId
+  +string destination
+  +string status
+  +string providerMessageId
+  +datetime sentAt
+  +datetime deliveredAt
+  +datetime failedAt
+}
+
+class CampaignEvent {
+  +UUID id
+  +UUID campaignDeliveryId
+  +string eventType
+  +datetime occurredAt
+  +string eventReference
+}
+
+class SocialAccount {
+  +UUID id
+  +UUID companyId
+  +string platform
+  +string externalAccountId
+  +string connectionStatus
+  +datetime connectedAt
+}
+
+class SocialPost {
+  +UUID id
+  +UUID companyId
+  +UUID socialAccountId
+  +string content
+  +string status
+  +datetime scheduledAt
+  +datetime publishedAt
+  +string externalPostId
+  +UUID createdBy
+}
+
+class AICopyGeneration {
+  +UUID id
+  +UUID companyId
+  +UUID requestedBy
+  +string productDescription
+  +string targetAudience
+  +string channel
+  +string tone
+  +string generatedContent
+  +string status
+  +datetime createdAt
+}
+
+Company "1" --> "0..*" Contact : manages
+Contact "1" --> "0..*" ContactTagAssignment : tagged through
+ContactTag "1" --> "0..*" ContactTagAssignment : applied through
+Contact "1" --> "0..*" ConsentRecord : records consent
+Company "1" --> "0..*" Audience : defines
+Audience "1" --> "0..*" AudienceMember : includes
+Contact "1" --> "0..*" AudienceMember : joins
+Company "1" --> "0..*" Campaign : owns
+Campaign "0..1" --> "1" CampaignTemplate : uses
+Campaign "1" --> "1" Audience : targets
+Campaign "1" --> "0..*" CampaignDelivery : produces
+Contact "1" --> "0..*" CampaignDelivery : receives
+CampaignDelivery "1" --> "0..*" CampaignEvent : tracks
+Company "1" --> "0..*" SocialAccount : connects
+SocialAccount "1" --> "0..*" SocialPost : publishes
+Company "1" --> "0..*" SocialPost : owns
+Company "1" --> "0..*" CampaignTemplate : maintains
+Company "1" --> "0..*" AICopyGeneration : generates
+AICopyGeneration ..> CampaignTemplate : may populate

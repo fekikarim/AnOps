@@ -1,0 +1,152 @@
+
+classDiagram
+direction TB
+
+class Company {
+  +UUID id
+  +string name
+  +string currencyCode
+}
+
+class Customer {
+  +UUID id
+  +UUID companyId
+  +string name
+  +string email
+  +string taxIdentifier
+  +string billingAddress
+  +bool isActive
+}
+
+class SalesOrder {
+  +UUID id
+  +UUID companyId
+  +UUID customerId
+  +string orderNumber
+  +string status
+  +decimal totalAmount
+}
+
+class Invoice {
+  +UUID id
+  +UUID companyId
+  +UUID customerId
+  +UUID salesOrderId
+  +string invoiceNumber
+  +string status
+  +date issueDate
+  +date dueDate
+  +string currencyCode
+  +decimal subtotal
+  +decimal taxAmount
+  +decimal totalAmount
+  +decimal amountPaid
+  +decimal amountDue
+  +UUID createdBy
+  +datetime postedAt
+}
+
+class InvoiceLine {
+  +UUID id
+  +UUID invoiceId
+  +UUID productId
+  +string description
+  +decimal quantity
+  +decimal unitPrice
+  +decimal taxRate
+  +decimal lineTotal
+}
+
+class Payment {
+  +UUID id
+  +UUID companyId
+  +string reference
+  +decimal amount
+  +string currencyCode
+  +string paymentMethod
+  +string status
+  +datetime paymentDate
+  +UUID recordedBy
+}
+
+class PaymentAllocation {
+  +UUID id
+  +UUID paymentId
+  +UUID invoiceId
+  +decimal allocatedAmount
+}
+
+class ExpenseCategory {
+  +UUID id
+  +UUID companyId
+  +string name
+  +bool requiresApproval
+  +bool isActive
+}
+
+class Expense {
+  +UUID id
+  +UUID companyId
+  +UUID categoryId
+  +UUID employeeId
+  +string vendorName
+  +string description
+  +date expenseDate
+  +decimal amount
+  +string currencyCode
+  +string status
+  +UUID submittedBy
+  +UUID approvedBy
+  +datetime approvedAt
+}
+
+class ReceiptDocument {
+  +UUID id
+  +UUID companyId
+  +UUID expenseId
+  +string storageKey
+  +string mimeType
+  +string checksum
+  +string processingStatus
+  +datetime uploadedAt
+}
+
+class ReceiptExtraction {
+  +UUID id
+  +UUID receiptDocumentId
+  +string extractedVendor
+  +date extractedDate
+  +decimal extractedTotal
+  +string currencyCode
+  +decimal confidenceScore
+  +string reviewStatus
+  +datetime processedAt
+}
+
+class FinancialReport {
+  +UUID id
+  +UUID companyId
+  +string reportType
+  +date periodStart
+  +date periodEnd
+  +string currencyCode
+  +datetime generatedAt
+}
+
+class Company {
+}
+
+Company "1" --> "0..*" Customer : manages
+Customer "1" --> "0..*" Invoice : billed
+SalesOrder "0..1" --> "0..*" Invoice : source
+Invoice "1" *-- "1..*" InvoiceLine : contains
+Invoice "1" --> "0..*" PaymentAllocation : receives
+Payment "1" *-- "1..*" PaymentAllocation : allocated through
+Company "1" --> "0..*" Payment : records
+Company "1" --> "0..*" Expense : records
+ExpenseCategory "1" --> "0..*" Expense : classifies
+Expense "1" --> "0..*" ReceiptDocument : supported by
+ReceiptDocument "1" --> "0..*" ReceiptExtraction : processed into
+FinancialReport ..> Invoice : aggregates
+FinancialReport ..> Payment : aggregates
+FinancialReport ..> Expense : aggregates

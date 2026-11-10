@@ -1,0 +1,165 @@
+
+classDiagram
+direction TB
+
+class Company {
+  +UUID id
+  +string name
+}
+
+class Department {
+  +UUID id
+  +UUID companyId
+  +string name
+  +UUID managerEmployeeId
+  +bool isActive
+}
+
+class Employee {
+  +UUID id
+  +UUID companyId
+  +UUID departmentId
+  +UUID managerEmployeeId
+  +UUID userId
+  +string employeeNumber
+  +string firstName
+  +string lastName
+  +string workEmail
+  +string phone
+  +date hireDate
+  +string employmentStatus
+  +bool isActive
+}
+
+class LeaveType {
+  +UUID id
+  +UUID companyId
+  +string name
+  +bool paid
+  +bool requiresApproval
+  +bool isActive
+}
+
+class LeaveBalance {
+  +UUID id
+  +UUID employeeId
+  +UUID leaveTypeId
+  +int year
+  +decimal entitledDays
+  +decimal carriedOverDays
+  +decimal usedDays
+  +decimal reservedDays
+}
+
+class LeaveRequest {
+  +UUID id
+  +UUID companyId
+  +UUID employeeId
+  +UUID leaveTypeId
+  +date startDate
+  +date endDate
+  +decimal requestedDays
+  +string reason
+  +string status
+  +UUID reviewedBy
+  +datetime reviewedAt
+}
+
+class AttendanceRecord {
+  +UUID id
+  +UUID companyId
+  +UUID employeeId
+  +datetime checkIn
+  +datetime checkOut
+  +decimal recordedHours
+  +string source
+  +string status
+  +UUID approvedBy
+}
+
+class PayrollPeriod {
+  +UUID id
+  +UUID companyId
+  +int year
+  +int month
+  +date startDate
+  +date endDate
+  +string status
+  +datetime finalizedAt
+}
+
+class SalaryProfile {
+  +UUID id
+  +UUID employeeId
+  +decimal baseSalary
+  +string currencyCode
+  +string payFrequency
+  +date effectiveFrom
+  +date effectiveTo
+}
+
+class Payslip {
+  +UUID id
+  +UUID payrollPeriodId
+  +UUID employeeId
+  +decimal basePay
+  +decimal allowances
+  +decimal deductions
+  +decimal unpaidLeaveDeduction
+  +decimal netPay
+  +string currencyCode
+  +string status
+  +datetime generatedAt
+  +datetime finalizedAt
+}
+
+class PayslipLine {
+  +UUID id
+  +UUID payslipId
+  +string lineType
+  +string description
+  +decimal quantity
+  +decimal unitAmount
+  +decimal totalAmount
+}
+
+class HRPolicyDocument {
+  +UUID id
+  +UUID companyId
+  +string title
+  +string storageKey
+  +string version
+  +string status
+  +datetime publishedAt
+}
+
+class AIHRAnswer {
+  +UUID id
+  +UUID companyId
+  +UUID requesterUserId
+  +string question
+  +string answer
+  +string status
+  +datetime createdAt
+}
+
+Company "1" --> "0..*" Department : contains
+Company "1" --> "0..*" Employee : employs
+Department "1" --> "0..*" Employee : groups
+Employee "0..1" --> "0..*" Employee : manages
+Employee "1" --> "0..*" LeaveRequest : submits
+LeaveType "1" --> "0..*" LeaveRequest : categorizes
+Employee "1" --> "0..*" LeaveBalance : owns
+LeaveType "1" --> "0..*" LeaveBalance : defines
+Employee "1" --> "0..*" AttendanceRecord : records
+Company "1" --> "0..*" PayrollPeriod : schedules
+PayrollPeriod "1" --> "0..*" Payslip : contains
+Employee "1" --> "0..*" Payslip : receives
+Employee "1" --> "1..*" SalaryProfile : compensation history
+Payslip "1" *-- "1..*" PayslipLine : details
+Payslip ..> LeaveRequest : uses approved leave
+Payslip ..> AttendanceRecord : uses attendance
+Payslip ..> SalaryProfile : calculates from
+Company "1" --> "0..*" HRPolicyDocument : maintains
+HRPolicyDocument ..> AIHRAnswer : provides authorized context
+Employee ..> AIHRAnswer : requests assistance

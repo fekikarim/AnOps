@@ -1,0 +1,28 @@
+{
+  "departments": [
+    { "name": "Engineering", "description": "Software development, architecture and infrastructure" },
+    { "name": "Product & Design", "description": "Product management, UX/UI and user research" },
+    { "name": "Human Resources", "description": "People operations, talent acquisition and employee relations" },
+    { "name": "Finance & Accounting", "description": "Financial planning, accounting and payroll" },
+    { "name": "Sales & Marketing", "description": "Revenue growth, outreach and brand marketing" },
+    { "name": "Operations", "description": "Business administration, facilities and logistics" }
+  ],
+  "jobTitles": [
+    { "title": "Senior Software Engineer", "deptName": "Engineering" },
+    { "title": "Full Stack Developer", "deptName": "Engineering" },
+    { "title": "Frontend Specialist", "deptName": "Engineering" },
+    { "title": "DevOps Engineer", "deptName": "Engineering" },
+    { "title": "QA Engineer", "deptName": "Engineering" },
+    { "title": "Product Manager", "deptName": "Product & Design" },
+    { "title": "UI/UX Designer", "deptName": "Product & Design" },
+    { "title": "HR Director", "deptName": "Human Resources" },
+    { "title": "HR Specialist", "deptName": "Human Resources" },
+    { "title": "Talent Acquisition Lead", "deptName": "Human Resources" },
+    { "title": "Financial Analyst", "deptName": "Finance & Accounting" },
+    { "title": "Senior Accountant", "deptName": "Finance & Accounting" },
+    { "title": "Account Executive", "deptName": "Sales & Marketing" },
+    { "title": "Marketing Strategist", "deptName": "Sales & Marketing" },
+    { "title": "Operations Manager", "deptName": "Operations" },
+    { "title": "Executive Assistant", "deptName": "Operations" }
+  ]
+}

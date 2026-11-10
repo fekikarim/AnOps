@@ -1,0 +1,22 @@
+# Never ship local secrets or build output into the image
+.env
+.env.*
+!.env.example
+
+node_modules
+.next
+out
+build
+coverage
+.git
+.github
+.claude
+.opencode
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+docs
+tests
+uml-diagrams
+assets
+*.md

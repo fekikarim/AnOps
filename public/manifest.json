@@ -1,0 +1,35 @@
+{
+  "name": "AnOps",
+  "short_name": "AnOps",
+  "description": "One platform. Every operation.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f7f2",
+  "theme_color": "#111f1d",
+  "icons": [
+    {
+      "src": "/brand-kit/02-app-icons/anops-app-icon-dark-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand-kit/02-app-icons/anops-app-icon-dark-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand-kit/02-app-icons/anops-app-icon-dark-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/brand-kit/02-app-icons/anops-app-icon-dark-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

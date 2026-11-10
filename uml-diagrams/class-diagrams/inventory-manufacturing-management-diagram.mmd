@@ -1,0 +1,213 @@
+classDiagram
+direction TB
+
+class Company {
+  +UUID id
+  +string name
+}
+
+class ProductCategory {
+  +UUID id
+  +UUID companyId
+  +string name
+  +string description
+  +bool isActive
+}
+
+class Product {
+  +UUID id
+  +UUID companyId
+  +UUID categoryId
+  +string sku
+  +string name
+  +string description
+  +decimal salePrice
+  +decimal costPrice
+  +string unitOfMeasure
+  +decimal reorderPoint
+  +bool isStorable
+  +bool isActive
+}
+
+class Warehouse {
+  +UUID id
+  +UUID companyId
+  +string name
+  +string code
+  +string address
+  +bool isActive
+}
+
+class StockBalance {
+  +UUID id
+  +UUID productId
+  +UUID warehouseId
+  +decimal quantityOnHand
+  +decimal quantityReserved
+  +decimal quantityAvailable
+  +datetime updatedAt
+}
+
+class StockMovement {
+  +UUID id
+  +UUID companyId
+  +UUID productId
+  +UUID warehouseId
+  +string movementType
+  +decimal quantity
+  +string sourceType
+  +UUID sourceId
+  +string status
+  +UUID createdBy
+  +datetime occurredAt
+  +datetime postedAt
+}
+
+class Supplier {
+  +UUID id
+  +UUID companyId
+  +string name
+  +string email
+  +string phone
+  +string taxIdentifier
+  +bool isActive
+}
+
+class PurchaseOrder {
+  +UUID id
+  +UUID companyId
+  +UUID supplierId
+  +string orderNumber
+  +string status
+  +date orderDate
+  +date expectedDate
+  +decimal subtotal
+  +decimal taxAmount
+  +decimal totalAmount
+  +UUID createdBy
+  +datetime confirmedAt
+}
+
+class PurchaseOrderLine {
+  +UUID id
+  +UUID purchaseOrderId
+  +UUID productId
+  +decimal quantityOrdered
+  +decimal quantityReceived
+  +decimal unitCost
+  +decimal taxRate
+}
+
+class GoodsReceipt {
+  +UUID id
+  +UUID purchaseOrderId
+  +string receiptNumber
+  +string status
+  +datetime receivedAt
+  +UUID receivedBy
+}
+
+class GoodsReceiptLine {
+  +UUID id
+  +UUID goodsReceiptId
+  +UUID purchaseOrderLineId
+  +decimal quantityReceived
+}
+
+class BillOfMaterials {
+  +UUID id
+  +UUID companyId
+  +UUID finishedProductId
+  +decimal outputQuantity
+  +string status
+  +int version
+}
+
+class MaterialRequirement {
+  +UUID id
+  +UUID billOfMaterialsId
+  +UUID componentProductId
+  +decimal quantityRequired
+}
+
+class WorkOrder {
+  +UUID id
+  +UUID companyId
+  +UUID billOfMaterialsId
+  +UUID finishedProductId
+  +string orderNumber
+  +decimal plannedQuantity
+  +decimal producedQuantity
+  +string status
+  +datetime plannedStart
+  +datetime actualStart
+  +datetime completedAt
+  +UUID createdBy
+}
+
+class WorkOrderMaterial {
+  +UUID id
+  +UUID workOrderId
+  +UUID componentProductId
+  +decimal plannedQuantity
+  +decimal consumedQuantity
+}
+
+class StockForecast {
+  +UUID id
+  +UUID companyId
+  +UUID productId
+  +UUID warehouseId
+  +decimal forecastQuantity
+  +decimal suggestedReorderQuantity
+  +date forecastHorizon
+  +string status
+  +datetime generatedAt
+}
+
+class PurchaseRecommendation {
+  +UUID id
+  +UUID forecastId
+  +UUID supplierId
+  +string status
+  +decimal estimatedCost
+  +UUID reviewedBy
+  +datetime reviewedAt
+}
+
+class RecommendedPurchaseLine {
+  +UUID id
+  +UUID recommendationId
+  +UUID productId
+  +decimal suggestedQuantity
+  +decimal estimatedUnitCost
+}
+
+Company "1" --> "0..*" Product : owns
+Company "1" --> "0..*" Warehouse : operates
+Company "1" --> "0..*" Supplier : manages
+ProductCategory "1" --> "0..*" Product : classifies
+Product "1" --> "0..*" StockBalance : balances
+Warehouse "1" --> "0..*" StockBalance : stores
+Product "1" --> "0..*" StockMovement : moves
+Warehouse "1" --> "0..*" StockMovement : records
+Supplier "1" --> "0..*" PurchaseOrder : receives orders
+PurchaseOrder "1" *-- "1..*" PurchaseOrderLine : contains
+Product "1" --> "0..*" PurchaseOrderLine : ordered item
+PurchaseOrder "1" --> "0..*" GoodsReceipt : fulfilled by
+GoodsReceipt "1" *-- "1..*" GoodsReceiptLine : contains
+GoodsReceiptLine --> PurchaseOrderLine : fulfills
+Product "1" --> "0..*" BillOfMaterials : finished product
+BillOfMaterials "1" *-- "1..*" MaterialRequirement : defines
+Product "1" --> "0..*" MaterialRequirement : component
+BillOfMaterials "1" --> "0..*" WorkOrder : plans
+WorkOrder "1" *-- "0..*" WorkOrderMaterial : consumes
+Product "1" --> "0..*" WorkOrderMaterial : component
+WorkOrder --> Product : produces
+StockBalance ..> StockMovement : updated by posted movements
+Product "1" --> "0..*" StockForecast : forecast
+StockForecast "1" --> "0..*" PurchaseRecommendation : generates
+PurchaseRecommendation "1" *-- "1..*" RecommendedPurchaseLine : proposes
+RecommendedPurchaseLine --> Product : recommends
+PurchaseRecommendation --> Supplier : proposed supplier
+PurchaseRecommendation ..> PurchaseOrder : converts after approval

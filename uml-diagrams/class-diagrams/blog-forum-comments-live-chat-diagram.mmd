@@ -1,0 +1,156 @@
+
+classDiagram
+direction TB
+
+class Company {
+  +UUID id
+  +string name
+}
+
+class User {
+  +UUID id
+  +string displayName
+  +string status
+}
+
+class BlogPost {
+  +UUID id
+  +UUID companyId
+  +UUID authorUserId
+  +string slug
+  +string title
+  +string body
+  +string status
+  +datetime publishedAt
+  +datetime updatedAt
+}
+
+class ContentCategory {
+  +UUID id
+  +UUID companyId
+  +string name
+  +string slug
+}
+
+class ContentTag {
+  +UUID id
+  +UUID companyId
+  +string name
+}
+
+class BlogPostCategory {
+  +UUID blogPostId
+  +UUID categoryId
+}
+
+class BlogPostTag {
+  +UUID blogPostId
+  +UUID tagId
+}
+
+class ForumTopic {
+  +UUID id
+  +UUID companyId
+  +UUID authorUserId
+  +string title
+  +string body
+  +string status
+  +bool isPinned
+  +datetime createdAt
+}
+
+class ForumReply {
+  +UUID id
+  +UUID topicId
+  +UUID authorUserId
+  +UUID parentReplyId
+  +string body
+  +string status
+  +datetime createdAt
+  +datetime updatedAt
+}
+
+class Comment {
+  +UUID id
+  +UUID authorUserId
+  +string targetType
+  +UUID targetId
+  +string body
+  +string status
+  +datetime createdAt
+  +datetime updatedAt
+}
+
+class ChatConversation {
+  +UUID id
+  +UUID companyId
+  +UUID visitorUserId
+  +string visitorSessionId
+  +string status
+  +string channel
+  +datetime startedAt
+  +datetime closedAt
+}
+
+class ConversationParticipant {
+  +UUID id
+  +UUID conversationId
+  +UUID userId
+  +string participantRole
+  +datetime joinedAt
+  +datetime leftAt
+}
+
+class ChatMessage {
+  +UUID id
+  +UUID conversationId
+  +UUID senderUserId
+  +string senderType
+  +string body
+  +string messageType
+  +datetime sentAt
+  +datetime editedAt
+}
+
+class AISummary {
+  +UUID id
+  +UUID blogPostId
+  +UUID requestedBy
+  +string summary
+  +string status
+  +string modelVersion
+  +datetime generatedAt
+}
+
+class AIReplySuggestion {
+  +UUID id
+  +UUID conversationId
+  +UUID sourceMessageId
+  +string suggestedText
+  +string status
+  +UUID reviewedBy
+  +datetime generatedAt
+}
+
+Company "1" --> "0..*" BlogPost : publishes
+User "1" --> "0..*" BlogPost : authors
+BlogPost "1" --> "0..*" BlogPostCategory : categorized through
+ContentCategory "1" --> "0..*" BlogPostCategory : contains
+BlogPost "1" --> "0..*" BlogPostTag : tagged through
+ContentTag "1" --> "0..*" BlogPostTag : applied
+Company "1" --> "0..*" ForumTopic : hosts
+User "1" --> "0..*" ForumTopic : starts
+ForumTopic "1" *-- "0..*" ForumReply : contains
+ForumReply "0..1" --> "0..*" ForumReply : parent and replies
+User "1" --> "0..*" ForumReply : writes
+User "1" --> "0..*" Comment : writes
+BlogPost ..> Comment : may receive
+ForumTopic ..> Comment : may receive
+Company "1" --> "0..*" ChatConversation : supports
+ChatConversation "1" *-- "0..*" ConversationParticipant : includes
+ChatConversation "1" *-- "0..*" ChatMessage : contains
+User "1" --> "0..*" ConversationParticipant : participates
+User "1" --> "0..*" ChatMessage : sends
+BlogPost "1" --> "0..*" AISummary : summarized into
+ChatConversation "1" --> "0..*" AIReplySuggestion : suggests responses
+ChatMessage "1" --> "0..*" AIReplySuggestion : contextual source
