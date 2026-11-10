@@ -614,7 +614,7 @@ AnOps is a team project, academic year **2026/2027**. Each member owns the desig
         <img src="https://github.com/nesrine-derouiche.png?size=160" width="96" alt="Nesrine Derouiche"><br/>
         <b>Nesrine Derouiche</b>
       </a><br/>
-      <sub>Marketing &amp; Branding · Subscriptions</sub>
+      <sub>Marketing &amp; Branding · Subscriptions · Project Documentation</sub>
     </td>
     <td align="center" width="20%">
       <a href="https://github.com/hamabtw">
@@ -643,7 +643,7 @@ AnOps is a team project, academic year **2026/2027**. Each member owns the desig
 | Member | GitHub | Responsibilities |
 | --- | --- | --- |
 | **Karim Feki** | [@fekikarim](https://github.com/fekikarim) | Full design, AnOps AI, Inventory, Purchasing, Manufacturing, UML |
-| **Nesrine Derouiche** | [@nesrine-derouiche](https://github.com/nesrine-derouiche) | Marketing, Branding, Subscriptions |
+| **Nesrine Derouiche** | [@nesrine-derouiche](https://github.com/nesrine-derouiche) | Marketing, Branding, Subscriptions, Project Documentation |
 | **Mohamed Abidi** | [@hamabtw](https://github.com/hamabtw) | HR & Payroll, Sales, Multi-tenancy, Company, User management |
 | **Oussema Issaoui** | [@oussemaissaoui](https://github.com/oussemaissaoui) | Finance, CRM |
 | **Fatma Hidoussi** | [@fatmahidouss](https://github.com/fatmahidouss) | Blog & Community |
